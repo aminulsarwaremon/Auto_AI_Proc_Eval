@@ -1,10 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Auto AI Procurement Evaluation</title>
+  <title>Auto AI Procurement Evaluation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-<h1>Auto AI Procurement Evaluation</h1>
-<p>Version 1.0</p>
+  <h1>Auto AI Procurement Evaluation</h1>
+
+  <textarea id="prompt" rows="8" style="width:95%;" placeholder="Paste procurement scope here"></textarea>
+  <br><br>
+
+  <button onclick="runAI()">Generate Criteria with AI</button>
+
+  <pre id="result"></pre>
+
+  <script>
+    async function runAI() {
+      const prompt = document.getElementById("prompt").value;
+      const result = document.getElementById("result");
+
+      result.textContent = "Generating...";
+
+      const res = await fetch("/.netlify/functions/gemini-evaluate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: "Create procurement evaluation criteria for this scope. Return clear numbered criteria only: " + prompt
+        })
+      });
+
+      const data = await res.json();
+      result.textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
 </body>
 </html>
